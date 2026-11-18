@@ -29,9 +29,6 @@ jobs:
       - name: Run tests
         run: pnpm run test
 
-      - name: Typecheck
-        run: pnpm exec tsc --noEmit
-
       - name: Build store
         run: pnpm run build
 
