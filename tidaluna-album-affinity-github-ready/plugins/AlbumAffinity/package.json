@@ -1,0 +1,12 @@
+{
+  "name": "@luna/album-affinity",
+  "description": "Find albums you love by comparing your favorite TIDAL tracks with each album's complete track count. Includes filters, refresh, and album breakdowns.",
+  "author": {
+    "name": "todally",
+    "url": "https://github.com/todally",
+    "avatarUrl": ""
+  },
+  "version": "0.1.0",
+  "main": "./src/index.ts",
+  "type": "module"
+}
