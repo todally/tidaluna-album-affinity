@@ -1,0 +1,50 @@
+
+name: Build and publish Album Affinity
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.21.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26'
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Run tests
+        run: pnpm run test
+
+      - name: Typecheck
+        run: pnpm exec tsc --noEmit
+
+      - name: Build store
+        run: pnpm run build
+
+      - name: Verify release artifacts
+        run: |
+          test -s dist/store.json
+          find dist -maxdepth 1 -type f -name "luna.album-affinity*" | grep -q .
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest Album Affinity build
+          make_latest: true
+          files: dist/*
+          fail_on_unmatched_files: true
