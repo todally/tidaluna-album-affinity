@@ -1,7 +1,0 @@
-packages:
-  - 'plugins/*'
-
-# pnpm 12+ protects against dependency postinstall scripts by default.
-# The esbuild platform binary setup is explicitly trusted by this project.
-allowBuilds:
-  esbuild: true
