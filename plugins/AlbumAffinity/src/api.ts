@@ -1,6 +1,6 @@
 /**
  * TIDAL's existing desktop-session authentication is provided by TIDALuna.
- * This module performs GETs only, against TIDAL desktop API endpoints.
+ * Reads use GET; a click on the Love button authorizes a single album-favorite POST.
  * Tokens are never persisted, displayed, exported, or sent to other hosts.
  */
 import { TidalApi, redux } from "@luna/lib";
@@ -42,7 +42,7 @@ export async function getJson(path: string, signal: AbortSignal): Promise<JsonOb
   if (!path.startsWith("/")) throw new Error("Invalid API path");
   const url = `${BASE}${path}${path.includes("?") ? "&" : "?"}${TidalApi.queryArgs()}`;
   for (let attempt = 0; attempt < 3; attempt++) {
-    // Keep all requests read-only and at the known TIDAL host.
+    // Metadata requests stay read-only and on the known TIDAL host.
     const res = await fetch(url, {
       method: "GET",
       headers: await TidalApi.getAuthHeaders(),
@@ -137,4 +137,36 @@ export async function mapConcurrent<T, R>(values: readonly T[], limit: number, w
   };
   await Promise.all(Array.from({length: Math.min(limit, values.length)}, worker));
   return results;
+}
+
+/** Returns null if TIDAL refuses or changes the favorites-ID endpoint.
+ *  Null means "unknown", never "nothing is liked". */
+export async function getFavoriteAlbumIds(signal: AbortSignal): Promise<Set<string> | null> {
+  try {
+    const ids = await getJson(`/users/${activeUserId()}/favorites/ids`, signal);
+    const albumIds = ids.ALBUM;
+    if (!Array.isArray(albumIds)) return null;
+    return new Set(albumIds.map(String).filter(id => /^\d+$/.test(id)));
+  } catch (error) {
+    if (signal.aborted) throw error;
+    return null;
+  }
+}
+
+/** One intentional user-initiated TIDAL write: add *one* album to favorites.
+ *  Never removes favorites; never retries POST automatically. */
+export async function loveAlbum(albumId: string, signal: AbortSignal): Promise<void> {
+  if (!/^\d+$/.test(albumId)) throw new Error("Invalid album ID");
+  const path = `/users/${activeUserId()}/favorites/albums`;
+  const url = `${BASE}${path}?${TidalApi.queryArgs()}`;
+  const headers = new Headers(await TidalApi.getAuthHeaders());
+  headers.set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+  const form = new URLSearchParams({ albumIds: albumId, onArtifactNotFound: "FAIL" });
+  const response = await fetch(url, { method: "POST", headers, body: form, signal });
+  if (!response.ok) {
+    if (response.status === 401 || response.status === 403) {
+      throw new Error(`TIDAL declined this favorites update (${response.status}). Your login may not allow album changes.`);
+    }
+    throw new Error(`TIDAL could not add the album (${response.status}). Open the album in TIDAL and try its heart button.`);
+  }
 }

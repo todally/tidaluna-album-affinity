@@ -1,16 +1,22 @@
-# Publish this plugin from your GitHub account
+# Album Affinity v0.2 — update your existing GitHub repository
 
-1. Extract `tidaluna-album-affinity-github-ready.zip` to a new folder.
-2. Create a new GitHub repository named **tidaluna-album-affinity** (do not overwrite your existing playlist sorter).
-3. Use GitHub Desktop to add the extracted folder, commit, and publish to your account (`todally`). GitHub Desktop is recommended because hidden `.github` files and nested `plugins/` folders must be preserved.
-4. Go to **Settings → Actions → General → Workflow permissions → Read and write permissions**; save.
-5. Go to **Actions**. If no workflow ran, open **Build and publish Album Affinity → Run workflow**.
-6. Once the workflow has a green check and the GitHub **Releases** page shows the `latest` release, copy this store URL into **TIDAL → Luna Settings → Plugin Store → Install from URL**:
+Your repository: https://github.com/todally/tidaluna-album-affinity
 
-   `https://github.com/todally/tidaluna-album-affinity/releases/download/latest/store.json`
+**No GitHub Desktop or PowerShell is required.** This ZIP contains the complete updated source. To update using the GitHub website, extract it and replace the changed files in your existing repository, keeping the original nested file paths. You do **not** need to create a second repository.
 
-7. Install and enable **Album Affinity**, reload TIDAL, and click the **♥ Album Affinity** button near the lower right.
+The files to update are listed under "Updating the existing GitHub repository" in README.md. The main code lives in `plugins/AlbumAffinity/src/`. Be sure the NEW `snapshot.mjs` is uploaded as well as `index.ts` and `api.ts`, or the plugin will not build.
 
-The repository page URL (`https://github.com/todally/tidaluna-album-affinity`) and `/tree/main` URL are **not** plugin-store URLs. The release URL will not exist until the build runs.
+Your existing `.github/workflows/publish.yml` should remain installed. The workflow in this ZIP intentionally leaves out the Typecheck step that previously failed on TIDALuna dependency files. The `latest` release is updated automatically when GitHub Actions succeeds.
 
-If a build fails, open the failed job and copy the first red error message. This project has not been exercised in a real TIDAL client; report any missing-account-ID, 401/403, or unexpected API response messages when testing.
+After committing changes, open:
+
+- GitHub Actions: https://github.com/todally/tidaluna-album-affinity/actions
+- Releases: https://github.com/todally/tidaluna-album-affinity/releases
+
+In TIDALuna, the plugin store URL does not change:
+
+`https://github.com/todally/tidaluna-album-affinity/releases/download/latest/store.json`
+
+Refresh the store after the GitHub Actions build succeeds. If the plugin doesn't update, disable/re-enable or reinstall it from that store.
+
+**Important:** v0.2 cannot reconstruct a v0.1 scan that was never saved. Run one initial new scan. After that, scans survive restarts and unfinished scans can resume. Click an album heart only when you actually want to add it to TIDAL favorites.

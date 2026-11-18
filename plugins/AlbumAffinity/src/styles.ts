@@ -44,6 +44,10 @@ export const css = `
 #aa-dialog .aa-score{text-align:right;font-size:25px;font-weight:750;line-height:1.25;font-variant-numeric:tabular-nums}
 #aa-dialog .aa-score small{display:block;font-size:11px;color:#b9c8c9;font-weight:400;margin-top:6px}
 #aa-dialog .aa-tag{font-size:10px;background:#334b4b;color:#bdf6ed;border:1px solid #4a7470;border-radius:12px;padding:3px 7px}
+#aa-dialog .aa-card-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+#aa-dialog button.aa-love{font-size:11px;border:1px solid #66a3ab;background:#163840;color:#b7f8f3;padding:6px 10px;border-radius:16px;font-weight:700}
+#aa-dialog button.aa-love:hover:not(:disabled){background:#215158;border-color:#87dfda}
+#aa-dialog button.aa-love.aa-loved{background:#1e463f;border-color:#4a8f74;color:#b5f7d4;opacity:1;cursor:default}
 #aa-dialog .aa-details-toggle{border:0;background:transparent;color:#8ddce0;font-size:11px;padding:6px 0 0;text-decoration:underline}
 #aa-dialog .aa-breakdown{grid-column:1/-1;border-top:1px solid #39464d;padding-top:10px;display:flex;flex-direction:column;gap:5px}
 #aa-dialog .aa-track{font-size:12px;color:#c7d4d7;padding:5px 8px;background:#192127;border-radius:4px;display:flex;gap:10px}
